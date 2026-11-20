@@ -40,7 +40,6 @@ export function ScenarioVisuals({ product, scenario, route }: Props) {
     <section className="scenario-dashboard" aria-labelledby="scenario-results-title">
       <div className="scenario-dashboard__heading">
         <div>
-          <p className="eyebrow">Modeled scenario</p>
           <h2 id="scenario-results-title">What changes under these conditions.</h2>
         </div>
         <p>These are transparent estimates, never lab measurements or product facts.</p>
@@ -82,12 +81,12 @@ export function ScenarioVisuals({ product, scenario, route }: Props) {
           {decay.status === 'available' ? (
             <div className="chart-wrap" role="img" aria-label={`Projected ${decay.value.nutrient} availability across ${scenario.transitHours} hours`}>
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={decay.value.series} margin={{ top: 12, right: 12, left: -12, bottom: 0 }}>
-                  <CartesianGrid stroke="#3a3a3a" strokeDasharray="2 6" vertical={false} />
-                  <XAxis dataKey="hour" tick={{ fill: '#a0a0a0', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}h`} interval={Math.max(1, Math.floor(decay.value.series.length / 6))} />
-                  <YAxis domain={[0, 100]} tick={{ fill: '#a0a0a0', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} width={38} />
-                  <Tooltip cursor={{ stroke: '#6b6b6b', strokeDasharray: '4 4' }} contentStyle={{ background: '#171717', border: '1px solid #4a4a4a', borderRadius: '10px', color: '#f4f4f4' }} labelFormatter={(value) => `${value} hours`} formatter={(value) => [`${value}%`, 'Remaining']} />
-                  <Line type="monotone" dataKey="remainingPercent" stroke={scenario.transportMode === 'cold-chain-reefer' ? '#b8b8b8' : '#f2f2f2'} strokeWidth={2.4} dot={false} activeDot={{ r: 4 }} />
+                <LineChart data={decay.value.series} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+                  <CartesianGrid stroke="#DAD5C9" strokeDasharray="2 6" vertical={false} />
+                  <XAxis dataKey="hour" tick={{ fill: '#6E6760', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}h`} interval={Math.max(1, Math.floor(decay.value.series.length / 6))} />
+                  <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={{ fill: '#6E6760', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} width={42} />
+                  <Tooltip cursor={{ stroke: '#56514A', strokeDasharray: '4 4' }} contentStyle={{ background: '#FFFFFF', border: '1px solid #191713', borderRadius: '0', color: '#191713', fontSize: '12px' }} labelFormatter={(value) => `${value} hours`} formatter={(value) => [`${value}%`, 'Remaining']} />
+                  <Line type="monotone" dataKey="remainingPercent" stroke={scenario.transportMode === 'cold-chain-reefer' ? '#56514A' : '#191713'} strokeWidth={2.2} strokeDasharray={scenario.transportMode === 'cold-chain-reefer' ? '6 5' : undefined} dot={false} activeDot={{ r: 4, fill: '#191713' }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -101,14 +100,14 @@ export function ScenarioVisuals({ product, scenario, route }: Props) {
             ? <RouteMap route={route.value} transportMode={scenario.transportMode} />
             : <div className="visual-unavailable"><Leaf size={18} /><p>{route.reason}</p></div>}
           <p className="visual-note">{route.status === 'available' && route.value.routingKind === 'driving'
-            ? `${route.value.distanceKm?.toFixed(1)} km · ${route.value.durationHours?.toFixed(1)} h driving route. ${route.value.originKind === 'country-proxy' ? 'The country-level origin is a geographic proxy because no manufacturing place was reported. ' : route.value.originKind === 'researched-source' ? 'The origin was resolved from current public manufacturing information because no place was reported in the product record. ' : ''}${route.value.weather ? `Current weather across ${route.value.weather.sampleCount} route points: ${route.value.weather.averageTemperatureC.toFixed(1)}°C average (${route.value.weather.minimumTemperatureC.toFixed(1)}–${route.value.weather.maximumTemperatureC.toFixed(1)}°C).` : 'Current route weather was unavailable.'}`
+            ? `${route.value.distanceKm?.toFixed(1)} km over ${route.value.durationHours?.toFixed(1)} h of driving. ${route.value.originKind === 'country-proxy' ? 'The country-level origin is a geographic proxy because no manufacturing place was reported. ' : route.value.originKind === 'researched-source' ? 'The origin was resolved from current public manufacturing information because no place was reported in the product record. ' : ''}${route.value.weather ? `Current weather across ${route.value.weather.sampleCount} route points: ${route.value.weather.averageTemperatureC.toFixed(1)}°C average (${route.value.weather.minimumTemperatureC.toFixed(1)}–${route.value.weather.maximumTemperatureC.toFixed(1)}°C).` : 'Current route weather was unavailable.'}`
             : 'Manual map paths are direct-line scenarios for orientation, not road-routing claims. Place names are resolved by OpenStreetMap Nominatim.'}</p>
         </article>
       </div>
 
       <section className="assumptions-panel" aria-label="Model assumptions">
-        <div><p className="eyebrow">Assumptions / model {modelConfig.version}</p><h3>Read the boundary before the number.</h3></div>
-        <p>Cold-chain mode applies the demo assumption of 80% lower modeled nutrient loss and 40% higher freight emissions. Packaging is displayed from the source record; its carbon impact and water use are not modeled.</p>
+        <div><h3>Read the boundary before the number.</h3></div>
+        <p>Cold-chain mode applies the demo assumption of 80% lower modeled nutrient loss and 40% higher freight emissions. Packaging is displayed from the source record; its carbon impact and water use are not modeled. Model version {modelConfig.version}.</p>
       </section>
     </section>
   )

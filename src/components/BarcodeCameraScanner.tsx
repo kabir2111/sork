@@ -69,7 +69,7 @@ export function BarcodeCameraScanner({ onDetected, onClose }: Props) {
   return (
     <div className="camera-modal" role="dialog" aria-modal="true" aria-labelledby="scanner-title">
       <div className="camera-modal__panel">
-        <div className="camera-modal__header"><div><p className="eyebrow">Mobile barcode scan</p><h2 id="scanner-title">Aim at the barcode.</h2></div><button type="button" onClick={onClose} aria-label="Close camera scanner"><X size={20} /></button></div>
+        <div className="camera-modal__header"><div><h2 id="scanner-title">Aim at the barcode.</h2></div><button type="button" onClick={onClose} aria-label="Close camera scanner"><X size={20} /></button></div>
         <div className="camera-preview">
           <video ref={videoRef} autoPlay muted playsInline />
           <div className="camera-frame" aria-hidden="true"><span /><span /><span /><span /></div>

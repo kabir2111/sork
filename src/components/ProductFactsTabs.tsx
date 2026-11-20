@@ -43,7 +43,6 @@ export function ProductFactsTabs({ product, missingFields, micronutrientStatus }
     <section className="product-facts-tabs" aria-labelledby="facts-tabs-title">
       <div className="product-facts-tabs__header">
         <div>
-          <p className="section-kicker">Product record</p>
           <h2 id="facts-tabs-title">Source details</h2>
         </div>
         <p>Source facts are shown alongside modeled estimates when the public record is incomplete.</p>
@@ -91,7 +90,7 @@ export function ProductFactsTabs({ product, missingFields, micronutrientStatus }
           <div className="facts-reading-card">
             <div className="facts-reading-card__heading"><ListTree size={18} aria-hidden="true" /><div><h3>Ingredient list</h3><p>As supplied by the source record.</p></div></div>
             <p className="facts-reading-copy">{product.ingredientsText || 'Not reported by Open Food Facts.'}</p>
-            <div className="additive-list"><span>Listed additives</span><p>{product.additives?.length ? product.additives.join(' · ') : 'Not reported by Open Food Facts.'}</p></div>
+            <div className="additive-list"><span>Listed additives</span><p>{product.additives?.length ? product.additives.join(', ') : 'Not reported by Open Food Facts.'}</p></div>
           </div>
         ) : null}
 
