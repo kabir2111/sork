@@ -27,14 +27,14 @@ describe('sork.', () => {
 
   it('opens the dashboard from the landing page', () => {
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
-    expect(screen.getByRole('heading', { name: /live barcode lookup/i })).toBeInTheDocument()
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
+    expect(screen.getByRole('heading', { name: /look up a pack/i })).toBeInTheDocument()
   })
 
   it('validates barcodes before requesting data', () => {
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
-    fireEvent.change(screen.getByLabelText(/product barcode/i), { target: { value: '1234' } })
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
+    fireEvent.change(screen.getByLabelText(/type the barcode/i), { target: { value: '1234' } })
     fireEvent.click(screen.getByRole('button', { name: /^look up$/i }))
     expect(screen.getByRole('alert')).toHaveTextContent('Enter an 8–14 digit product barcode.')
   })
@@ -42,8 +42,8 @@ describe('sork.', () => {
   it('shows normalized, source-attributed facts from a successful lookup', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify(productPayload), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
-    fireEvent.change(screen.getByLabelText(/product barcode/i), { target: { value: '8906 0095-32363' } })
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
+    fireEvent.change(screen.getByLabelText(/type the barcode/i), { target: { value: '8906 0095-32363' } })
     fireEvent.click(screen.getByRole('button', { name: /^look up$/i }))
     expect(await screen.findByRole('heading', { name: 'Test Protein Bar' })).toBeInTheDocument()
     expect(screen.getByText('Group 4')).toBeInTheDocument()
@@ -56,7 +56,7 @@ describe('sork.', () => {
   it('builds a complete modeled profile when no source record is found', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ status: 0 }), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
     expect(await screen.findByRole('heading', { name: 'Product 8906009532363' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('tab', { name: /nutrition/i }))
@@ -66,7 +66,7 @@ describe('sork.', () => {
   it('completes a partial record with modeled values', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ status: 1, product: { code: '8906009532363', product_name: 'Sparse record' } }), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
     expect(await screen.findByRole('heading', { name: 'Sparse record' })).toBeInTheDocument()
     expect(screen.getByText('Partial source record')).toBeInTheDocument()
@@ -77,7 +77,7 @@ describe('sork.', () => {
   it('retries a failed network lookup', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValueOnce(new Error('Network unavailable')).mockResolvedValueOnce(new Response(JSON.stringify(productPayload), { status: 200 })).mockResolvedValue(new Response(JSON.stringify({ profile: { name: 'Test Protein Bar', brand: 'Test Brand', ingredients: 'Oats', additives: [], packaging: ['paper'], manufacturingPlace: 'Bengaluru, India', originCountry: 'India', quantityGrams: 50, novaGroup: 4, ecoScore: 'B', nutrients: { 'Vitamin C': 12 } } }), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
     expect(await screen.findByText('The product record is unavailable.')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /try again/i }))
@@ -87,9 +87,9 @@ describe('sork.', () => {
   it('renders automatic journey estimates only after a product record is found', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify(productPayload), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
-    expect(await screen.findByRole('heading', { name: /route, conditions, and mode are calculated for you/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /journey, calculated for you/i })).toBeInTheDocument()
     expect(screen.getByDisplayValue('Katpadi, Vellore')).toBeInTheDocument()
     expect(await screen.findByText(/modeled vitamin c loss in 24 hours/i)).toBeInTheDocument()
   })
@@ -97,7 +97,7 @@ describe('sork.', () => {
   it('renders the modeled availability curve when the source record contains a supported vitamin', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify(productPayload), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
 
     await waitFor(() => expect(screen.getByRole('heading', { name: /modeled availability curve/i })).toBeInTheDocument())
@@ -107,7 +107,7 @@ describe('sork.', () => {
   it('supports roving keyboard navigation between product fact tabs', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify(productPayload), { status: 200 })))
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /max protein bar/i }))
 
     const summaryTab = await screen.findByRole('tab', { name: /summary/i })
@@ -123,7 +123,7 @@ describe('sork.', () => {
 
   it('opens a camera scanner fallback when camera APIs are unavailable', async () => {
     render(<App />)
-    fireEvent.click(screen.getAllByRole('button', { name: /explore a product/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /look up a pack/i })[0])
     fireEvent.click(screen.getByRole('button', { name: /scan barcode with camera/i }))
     expect(await screen.findByRole('dialog', { name: /aim at the barcode/i })).toBeInTheDocument()
   })
